@@ -84,9 +84,9 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_login) {
             // Lo que pasa cuando pulsas en login
-            MainFragment mainFragment = new MainFragment();
+            LoginFragment loginFragment = new LoginFragment();
             FragmentManager manager = getSupportFragmentManager();
-            manager.beginTransaction().replace(R.id.frameLayout, mainFragment).commit();
+            manager.beginTransaction().replace(R.id.mainLayout, loginFragment).commit();
 
         } else if (id == R.id.nav_logout) { //Lo que pasa cuando pulsas en logout
 
