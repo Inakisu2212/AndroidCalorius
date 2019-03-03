@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_logout) { //Lo que pasa cuando pulsas en logout
 
+
         } else if (id == R.id.nav_registcalorias) { //....
 
         } else if (id == R.id.nav_share) {
