@@ -89,9 +89,14 @@ public class MainActivity extends AppCompatActivity
             manager.beginTransaction().replace(R.id.mainLayout, loginFragment).commit();
 
         } else if (id == R.id.nav_logout) { //Lo que pasa cuando pulsas en logout
-
+            LogoutFragment logoutFragment = new LogoutFragment();
+            FragmentManager manager = getSupportFragmentManager();
+            manager.beginTransaction().replace(R.id.mainLayout, logoutFragment).commit();
 
         } else if (id == R.id.nav_registcalorias) { //....
+            regCalFragment regcalfragment = new regCalFragment();
+            FragmentManager manager = getSupportFragmentManager();
+            manager.beginTransaction().replace(R.id.mainLayout, regcalfragment).commit();
 
         } else if (id == R.id.nav_share) {
 
