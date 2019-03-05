@@ -1,11 +1,19 @@
 package com.example.calorius;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -30,6 +38,61 @@ public class LoginFragment extends Fragment {
 
     //A partir de aquí pasan cosas de HTTP REST
 
+    private class TareaWSObtener extends AsyncTask<String,Integer,Boolean> {
 
+        private int idCli;
+        private String nombCli;
+        private int telefCli;
+
+        protected Boolean doInBackground(String... params) {
+
+            boolean resul = true;
+
+            //HttpClient httpClient = new DefaultHttpClient();
+            URL url = new URL("la URL");
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            try{
+                InputStream in =  new BufferedInputStream(urlConnection.getInputStream());
+                readStream(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally{
+                urlConnection.disconnect();
+            }
+            String id = params[0];
+
+            HttpGet del =
+                    new HttpGet("http://10.107.57.21:51674/Api/Clientes/Cliente/" + id);
+
+            del.setHeader("content-type", "application/json");
+
+            try
+            {
+                HttpResponse resp = httpClient.execute(del);
+                String respStr = EntityUtils.toString(resp.getEntity());
+
+                JSONObject respJSON = new JSONObject(respStr);
+
+                idCli = respJSON.getInt("Id");
+                nombCli = respJSON.getString("Nombre");
+                telefCli = respJSON.getInt("Telefono");
+            }
+            catch(Exception ex)
+            {
+                Log.e("ServicioRest","Error!", ex);
+                resul = false;
+            }
+
+            return resul;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            if (result)
+            {
+                lblResultado.setText("" + idCli + "-" + nombCli + "-" + telefCli);
+            }
+        }
+    }
 
 }
