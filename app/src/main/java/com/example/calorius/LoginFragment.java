@@ -9,11 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -50,16 +55,45 @@ public class LoginFragment extends Fragment {
             boolean resul = true;
 
             //HttpClient httpClient = new DefaultHttpClient();
-            URL url = null;
+            String url = "laurl:123/Apli/Usuarios/Usuario......"
+            URL objUrl = null;
             try { //me pedía envolverlo en try catch
-                url = new URL("la URL");
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            HttpURLConnection urlConnection = null;
-            try { //Me pedía envolverlo en try catch
-                urlConnection = (HttpURLConnection) url.openConnection();
+                objUrl = new URL("la URL");
+                HttpURLConnection urlConnection = null;
+                urlConnection = (HttpURLConnection) objUrl.openConnection();
+                urlConnection.setDoOutput(true);
+                urlConnection.setDoInput(true);
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.setRequestProperty("Accpet", "application/json");
+                urlConnection.setRequestMethod("POST");
+
+                JSONObject dato = new JSONObject();
+                dato.put("email", params[0]);
+                dato.put("password", params[1]);
+
+                OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
+                wr.write(dato.toString());
+                wr.flush();
+
+                int httpResponse = urlConnection.getResponseCode();
+                if(httpResponse == HttpURLConnection.HTTP_OK)
+                {
+                    BufferedReader br = new BufferedReader(
+                            new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
+                    String valorDevuelto = null;
+                    valorDevuelto = br.Line();
+                    if(!valorDevuelto.equals("true"))
+                    resul = false;
+                }
+                else
+                {
+                    Log.e("ServicioRest", "Error resultado" + httpResponse);
+                    resul = false;
+                }
+
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
             try{
