@@ -46,16 +46,15 @@ public class LoginFragment extends Fragment {
 
     private class TareaWSObtener extends AsyncTask<String,Integer,Boolean> {
 
-        private int idCli;
-        private String nombCli;
-        private int telefCli;
+        private String email;
+        private String password;
 
         protected Boolean doInBackground(String... params) {
 
             boolean resul = true;
 
             //HttpClient httpClient = new DefaultHttpClient();
-            String url = "laurl:123/Apli/Usuarios/Usuario......";
+            String url = "laurl:123/Apli/Usuarios/Usuario......"; //esto tiene que concretarse
             URL objUrl = null;
             try { //me pedía envolverlo en try catch
                 objUrl = new URL("la URL");
