@@ -66,10 +66,11 @@ public class LoginFragment extends Fragment {
                 urlConnection.setRequestProperty("Accpet", "application/json");
                 urlConnection.setRequestMethod("POST");
 
-                JSONObject dato = new JSONObject();
+                JSONObject dato = new JSONObject(); //Construimos el objeto Usuario en formato JSON
                 dato.put("email", params[0]);
                 dato.put("password", params[1]);
 
+                //Aquí no tengo muy claro qué leches está pasando
                 OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
                 wr.write(dato.toString());
                 wr.flush();
