@@ -54,17 +54,17 @@ public class LoginFragment extends Fragment {
             boolean resul = true;
 
             //HttpClient httpClient = new DefaultHttpClient();
-            String url = "laurl:123/Apli/Usuarios/Usuario......"; //esto tiene que concretarse
+            String url = "192.168.0.24:567/Api/Usuarios/Usuario/"; //esto tiene que concretarse
             URL objUrl = null;
             try { //me pedía envolverlo en try catch
-                objUrl = new URL("la URL");
+                objUrl = new URL(url);
                 HttpURLConnection urlConnection = null;
                 urlConnection = (HttpURLConnection) objUrl.openConnection();
                 urlConnection.setDoOutput(true);
                 urlConnection.setDoInput(true);
                 urlConnection.setRequestProperty("Content-Type", "application/json");
                 urlConnection.setRequestProperty("Accept", "application/json");
-                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestMethod("GET");
 
                 JSONObject dato = new JSONObject(); //Construimos el objeto Usuario en formato JSON
                 dato.put("email", params[0]);
@@ -96,6 +96,8 @@ public class LoginFragment extends Fragment {
                 Log.e("ServicioRest", "Error!", ex);
                 resul = false;
             }
+
+
             /*try{
                 InputStream in =  new BufferedInputStream(urlConnection.getInputStream());
                 readStream(in); //este ejemplo tiene un método que lee el stream. No sé si lo
