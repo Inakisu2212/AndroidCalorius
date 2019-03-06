@@ -15,6 +15,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 
@@ -49,11 +50,22 @@ public class LoginFragment extends Fragment {
             boolean resul = true;
 
             //HttpClient httpClient = new DefaultHttpClient();
-            URL url = new URL("la URL");
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            URL url = null;
+            try { //me pedía envolverlo en try catch
+                url = new URL("la URL");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection urlConnection = null;
+            try { //Me pedía envolverlo en try catch
+                urlConnection = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             try{
                 InputStream in =  new BufferedInputStream(urlConnection.getInputStream());
-                readStream(in);
+                readStream(in); //este ejemplo tiene un método que lee el stream. No sé si lo
+                                //tenemos que hacer así...
             } catch (IOException e) {
                 e.printStackTrace();
             } finally{
