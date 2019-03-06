@@ -132,7 +132,7 @@ public class LoginFragment extends Fragment {
             return resul;
         }
 
-        protected void onPostExecute(Boolean result) {
+        protected void onPostExecute(Boolean result) { //A partir de aquí hacer que funcione
 
             if (result)
             {
