@@ -81,7 +81,7 @@ public class LoginFragment extends Fragment {
                     BufferedReader br = new BufferedReader(
                             new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
                     String valorDevuelto = null;
-                    valorDevuelto = br.Line();
+                    valorDevuelto = br.readLine(); //en comentario tutorial ponía br.Line()
                     if(!valorDevuelto.equals("true"))
                     resul = false;
                 }
@@ -91,12 +91,12 @@ public class LoginFragment extends Fragment {
                     resul = false;
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } catch(Exception ex)
+            {
+                Log.e("ServicioRest", "Error!", ex);
+                resul = false;
             }
-            try{
+            /*try{
                 InputStream in =  new BufferedInputStream(urlConnection.getInputStream());
                 readStream(in); //este ejemplo tiene un método que lee el stream. No sé si lo
                                 //tenemos que hacer así...
@@ -127,7 +127,7 @@ public class LoginFragment extends Fragment {
             {
                 Log.e("ServicioRest","Error!", ex);
                 resul = false;
-            }
+            }*/
 
             return resul;
         }
@@ -136,7 +136,7 @@ public class LoginFragment extends Fragment {
 
             if (result)
             {
-                lblResultado.setText("" + idCli + "-" + nombCli + "-" + telefCli);
+              //  lblResultado.setText("" + idCli + "-" + nombCli + "-" + telefCli);
             }
         }
     }
