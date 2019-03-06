@@ -55,7 +55,7 @@ public class LoginFragment extends Fragment {
             boolean resul = true;
 
             //HttpClient httpClient = new DefaultHttpClient();
-            String url = "laurl:123/Apli/Usuarios/Usuario......"
+            String url = "laurl:123/Apli/Usuarios/Usuario......";
             URL objUrl = null;
             try { //me pedía envolverlo en try catch
                 objUrl = new URL("la URL");
