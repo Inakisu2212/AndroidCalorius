@@ -63,7 +63,7 @@ public class LoginFragment extends Fragment {
                 urlConnection.setDoOutput(true);
                 urlConnection.setDoInput(true);
                 urlConnection.setRequestProperty("Content-Type", "application/json");
-                urlConnection.setRequestProperty("Accpet", "application/json");
+                urlConnection.setRequestProperty("Accept", "application/json");
                 urlConnection.setRequestMethod("POST");
 
                 JSONObject dato = new JSONObject(); //Construimos el objeto Usuario en formato JSON
