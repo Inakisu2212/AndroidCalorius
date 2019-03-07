@@ -32,8 +32,11 @@ import java.net.URL;
  */
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
-private Button botonLogin;
-private TextView textoEmail, textoPasswd;
+    private Button botonLogin;
+    private TextView textoEmail, textoPasswd;
+    private TextView lblResultado;
+
+
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -52,9 +55,9 @@ private TextView textoEmail, textoPasswd;
         botonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TareaWSObtener tarea = new TareaWSObtener();
+                TareaWSObtener tareaAsincrona = new TareaWSObtener();
 
-                tarea.execute(textoEmail.getText().toString(),
+                tareaAsincrona.execute(textoEmail.getText().toString(),
                         textoPasswd.getText().toString());
             }
         });
@@ -73,7 +76,6 @@ private TextView textoEmail, textoPasswd;
 
         private String email;
         private String password;
-
 
         protected Boolean doInBackground(String... params) {
 
@@ -179,7 +181,7 @@ private TextView textoEmail, textoPasswd;
 
             if (result)
             {
-              //  lblResultado.setText("" + idCli + "-" + nombCli + "-" + telefCli);
+              lblResultado.setText("-> " + email + " - " + password);
             }
         }
     }
