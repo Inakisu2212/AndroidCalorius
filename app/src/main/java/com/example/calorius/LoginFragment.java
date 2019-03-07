@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,19 +30,42 @@ import java.net.URL;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements View.OnClickListener {
 
-
+private Button botonLogin;
+private TextView textoEmail, textoPasswd;
     public LoginFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        View v = inflater.inflate(R.layout.fragment_login, container, false);
+
+        textoEmail = (TextView) v.findViewById(R.id.emailText);
+        textoPasswd = (TextView) v.findViewById(R.id.passwdText);
+
+        botonLogin = (Button) v.findViewById(R.id.loginButton);
+        botonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TareaWSObtener tarea = new TareaWSObtener();
+
+                tarea.execute(textoEmail.getText().toString(),
+                        textoPasswd.getText().toString());
+            }
+        });
+        return v;
     }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
 
     //A partir de aquí pasan cosas de HTTP REST
 
@@ -49,12 +74,14 @@ public class LoginFragment extends Fragment {
         private String email;
         private String password;
 
+
         protected Boolean doInBackground(String... params) {
 
             boolean resul = true;
-
+            String texto = params[0];
             //HttpClient httpClient = new DefaultHttpClient();
-            String url = "192.168.0.24:567/Api/Usuarios/Usuario/"; //esto tiene que concretarse
+            StringBuilder result = new StringBuilder();
+            String url = "192.168.0.24:567/Api/Usuarios/Usuario/"+params[0]; //esto tiene que concretarse
             URL objUrl = null;
             try { //me pedía envolverlo en try catch
                 objUrl = new URL(url);
@@ -66,36 +93,50 @@ public class LoginFragment extends Fragment {
                 urlConnection.setRequestProperty("Accept", "application/json");
                 urlConnection.setRequestMethod("GET");
 
-                JSONObject dato = new JSONObject(); //Construimos el objeto Usuario en formato JSON
-                dato.put("email", params[0]);
-                dato.put("password", params[1]);
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
-                //Aquí no tengo muy claro qué leches está pasando
-                OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
-                wr.write(dato.toString());
-                wr.flush();
+                String line;
+                while ((line = reader.readLine())!=null){
+                    result.append(line);
+                }
 
-                int httpResponse = urlConnection.getResponseCode();
-                if(httpResponse == HttpURLConnection.HTTP_OK)
-                {
-                    BufferedReader br = new BufferedReader(
-                            new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
-                    String valorDevuelto = null;
-                    valorDevuelto = br.readLine(); //en comentario tutorial ponía br.Line()
-                    if(!valorDevuelto.equals("true"))
-                    resul = false;
-                }
-                else
-                {
-                    Log.e("ServicioRest", "Error resultado" + httpResponse);
-                    resul = false;
-                }
+                JSONObject datoObtenido = new JSONObject(line); //Construimos el objeto Usuario en formato JSON
+                String email = datoObtenido.getString("email");
+                String passwd = datoObtenido.getString("password");
 
             } catch(Exception ex)
             {
                 Log.e("ServicioRest", "Error!", ex);
                 resul = false;
             }
+
+                //Aquí no tengo muy claro qué leches está pasando
+//                OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
+//                wr.write(dato.toString());
+//                wr.flush();
+//
+//                int httpResponse = urlConnection.getResponseCode();
+//                if(httpResponse == HttpURLConnection.HTTP_OK)
+//                {
+//                    BufferedReader br = new BufferedReader(
+//                            new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
+//                    String valorDevuelto = null;
+//                    valorDevuelto = br.readLine(); //en comentario tutorial ponía br.Line()
+//                    if(!valorDevuelto.equals("true"))
+//                        resul = false;
+//                }
+//                else
+//                {
+//                    Log.e("ServicioRest", "Error resultado" + httpResponse);
+//                    resul = false;
+//                }
+//
+//            } catch(Exception ex)
+//            {
+//                Log.e("ServicioRest", "Error!", ex);
+//                resul = false;
+//            }
 
 
             /*try{
