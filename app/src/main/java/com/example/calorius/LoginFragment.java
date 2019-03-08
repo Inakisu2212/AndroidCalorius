@@ -83,27 +83,31 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             String texto = params[0];
             //HttpClient httpClient = new DefaultHttpClient();
             StringBuilder result = new StringBuilder();
-            String url = "192.168.0.24:567/Api/Usuarios/Usuario/"+params[0]; //esto tiene que concretarse
+            String url = "http://192.168.0.24:567/Api/Usuarios/Usuario/"+params[0]+"/"; //esto tiene que concretarse
             URL objUrl = null;
             try { //me pedía envolverlo en try catch
                 objUrl = new URL(url);
                 HttpURLConnection urlConnection = null;
                 urlConnection = (HttpURLConnection) objUrl.openConnection();
                 urlConnection.setDoOutput(true);
-                urlConnection.setDoInput(true);
+                urlConnection.setDoInput(true); //puede que esto sobre
                 urlConnection.setRequestProperty("Content-Type", "application/json");
-                urlConnection.setRequestProperty("Accept", "application/json");
+                //urlConnection.setRequestProperty("Accept", "application/json");
                 urlConnection.setRequestMethod("GET");
 
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                int responseCode = urlConnection.getResponseCode();
+                System.out.println("--> responseCode es: "+ responseCode);
+                //InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                BufferedReader reader = new BufferedReader
+                        (new InputStreamReader(urlConnection.getInputStream()));
 
                 String line;
+                StringBuffer response = new StringBuffer();
                 while ((line = reader.readLine())!=null){
-                    result.append(line);
+                    response.append(line);
                 }
 
-                JSONObject datoObtenido = new JSONObject(line); //Construimos el objeto Usuario en formato JSON
+                JSONObject datoObtenido = new JSONObject(response.toString()); //Construimos el objeto Usuario en formato JSON
                 String email = datoObtenido.getString("email");
                 String passwd = datoObtenido.getString("password");
 
