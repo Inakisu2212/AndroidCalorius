@@ -96,7 +96,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 urlConnection.setRequestMethod("GET");
 
                 int responseCode = urlConnection.getResponseCode();
+                String responseMessage = urlConnection.getResponseMessage();
+
                 System.out.println("--> responseCode es: "+ responseCode);
+                System.out.println("--> responseMensage es: "+ responseMessage);
                 //InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 BufferedReader reader = new BufferedReader
                         (new InputStreamReader(urlConnection.getInputStream()));
