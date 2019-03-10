@@ -1,6 +1,7 @@
 package com.example.calorius;
 
 
+import android.annotation.TargetApi;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -53,6 +54,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         botonLogin = (Button) v.findViewById(R.id.loginButton);
         botonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
+            @TargetApi(11)
             public void onClick(View v) {
                 TareaWSObtener tareaAsincrona = new TareaWSObtener();
 
@@ -70,7 +72,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 
     //A partir de aquí pasan cosas de HTTP REST
-
+    @TargetApi(11)
     private class TareaWSObtener extends AsyncTask<String,Integer,Boolean> {
 
         private String email;
@@ -79,116 +81,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         protected Boolean doInBackground(String... params) {
 
             boolean resul = true;
-            String texto = params[0];
-            //HttpClient httpClient = new DefaultHttpClient();
-            StringBuilder result = new StringBuilder();
-            String url = "http://192.168.0.24:567/Api/Usuarios/Usuario/"+params[0]+"/"; //esto tiene que concretarse
-            URL objUrl = null;
-            try { //me pedía envolverlo en try catch
-                objUrl = new URL(url);
-                HttpURLConnection urlConnection = null;
-                urlConnection = (HttpURLConnection) objUrl.openConnection();
-                urlConnection.setDoOutput(true);
-                urlConnection.setDoInput(true);
-                urlConnection.setRequestProperty("Content-Type", "application/json");
-                //urlConnection.setRequestProperty("Accept", "application/json");
-                urlConnection.setRequestMethod("GET");
 
-                int responseCode = urlConnection.getResponseCode();
-                String responseMessage = urlConnection.getResponseMessage();
-
-                System.out.println("--> responseCode es: "+ responseCode);
-                System.out.println("--> responseMensage es: "+ responseMessage);
-                //InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                BufferedReader reader = new BufferedReader
-                        (new InputStreamReader(urlConnection.getInputStream()));
-
-                int httpResponse = urlConnection.getResponseCode();
-                if(httpResponse == HttpURLConnection.HTTP_OK)
-                {
-                    BufferedReader br = new BufferedReader(
-                            new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
-                    String valorDevuelto = null;
-                    valorDevuelto = br.readLine(); //en comentario tutorial ponía br.Line()
-                    if(!valorDevuelto.equals("true"))
-                    resul = false;
-                }
-                else
-                {
-                    Log.e("ServicioRest", "Error resultado" + httpResponse);
-                    resul = false;
-                }
-
-                JSONObject datoObtenido = new JSONObject(response.toString()); //Construimos el objeto Usuario en formato JSON
-                String email = datoObtenido.getString("email");
-                String passwd = datoObtenido.getString("password");
-
-            } catch(Exception ex)
-            {
-                Log.e("ServicioRest", "Error!", ex);
-                resul = false;
-            }
-
-                //Aquí no tengo muy claro qué leches está pasando
-//                OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
-//                wr.write(dato.toString());
-//                wr.flush();
-//
-//                int httpResponse = urlConnection.getResponseCode();
-//                if(httpResponse == HttpURLConnection.HTTP_OK)
-//                {
-//                    BufferedReader br = new BufferedReader(
-//                            new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
-//                    String valorDevuelto = null;
-//                    valorDevuelto = br.readLine(); //en comentario tutorial ponía br.Line()
-//                    if(!valorDevuelto.equals("true"))
-//                        resul = false;
-//                }
-//                else
-//                {
-//                    Log.e("ServicioRest", "Error resultado" + httpResponse);
-//                    resul = false;
-//                }
-//
-//            } catch(Exception ex)
-//            {
-//                Log.e("ServicioRest", "Error!", ex);
-//                resul = false;
-//            }
-
-
-            /*try{
-                InputStream in =  new BufferedInputStream(urlConnection.getInputStream());
-                readStream(in); //este ejemplo tiene un método que lee el stream. No sé si lo
-                                //tenemos que hacer así...
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally{
-                urlConnection.disconnect();
-            }
-            String id = params[0];
-
-            HttpGet del =
-                    new HttpGet("http://10.107.57.21:51674/Api/Clientes/Cliente/" + id);
-
-            del.setHeader("content-type", "application/json");
-
-            try
-            {
-                HttpResponse resp = httpClient.execute(del);
-                String respStr = EntityUtils.toString(resp.getEntity());
-
-                JSONObject respJSON = new JSONObject(respStr);
-
-                idCli = respJSON.getInt("Id");
-                nombCli = respJSON.getString("Nombre");
-                telefCli = respJSON.getInt("Telefono");
-            }
-            catch(Exception ex)
-            {
-                Log.e("ServicioRest","Error!", ex);
-                resul = false;
-            }*/
 
             return resul;
         }
