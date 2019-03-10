@@ -58,12 +58,13 @@ public class LoginFragment extends Fragment {
             String url = "laurl:123/Apli/Usuarios/Usuario......";
             URL objUrl = null;
             try { //me pedía envolverlo en try catch
-                objUrl = new URL("la URL");
+                objUrl = new URL();
                 HttpURLConnection urlConnection = null;
                 urlConnection = (HttpURLConnection) objUrl.openConnection();
                 urlConnection.setDoOutput(true);
                 urlConnection.setDoInput(true);
                 urlConnection.setRequestProperty("Content-Type", "application/json");
+
                 urlConnection.setRequestProperty("Accpet", "application/json");
                 urlConnection.setRequestMethod("POST");
 
@@ -89,6 +90,27 @@ public class LoginFragment extends Fragment {
                 {
                     Log.e("ServicioRest", "Error resultado" + httpResponse);
                     resul = false;
+
+                //urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible )");
+                urlConnection.setRequestProperty("Accept", "application/json");
+                urlConnection.setRequestMethod("GET");
+
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+                int responseCode = urlConnection.getResponseCode();
+                String responseMessage = urlConnection.getResponseMessage();
+
+                System.out.println("--> responseCode es: "+ responseCode);
+                System.out.println("--> responseMensage es: "+ responseMessage);
+
+
+
+                String line;
+                StringBuffer response = new StringBuffer();
+                while ((line = reader.readLine())!=null){
+                    response.append(line);
+
                 }
 
             } catch(Exception ex)
