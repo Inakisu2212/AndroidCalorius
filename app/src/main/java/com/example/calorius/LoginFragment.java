@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +30,11 @@ import java.net.URL;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements View.OnClickListener {
+
+    private Button botonLogin;
+    private TextView textoEmail, textoPasswd;
+    private TextView lblResultado;
 
 
     public LoginFragment() {
@@ -39,42 +45,63 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        View v = inflater.inflate(R.layout.fragment_login, container, false);
+
+        textoEmail = (TextView) v.findViewById(R.id.emailText);
+        textoPasswd = (TextView) v.findViewById(R.id.passwdText);
+
+        botonLogin = (Button) v.findViewById(R.id.loginButton);
+        botonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TareaWSObtener tareaAsincrona = new TareaWSObtener();
+
+                tareaAsincrona.execute(textoEmail.getText().toString(),
+                        textoPasswd.getText().toString());
+            }
+        });
+        return v;
     }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
 
     //A partir de aquí pasan cosas de HTTP REST
 
     private class TareaWSObtener extends AsyncTask<String,Integer,Boolean> {
 
-        private int idCli;
-        private String nombCli;
-        private int telefCli;
+        private String email;
+        private String password;
 
         protected Boolean doInBackground(String... params) {
 
             boolean resul = true;
-
+            String texto = params[0];
             //HttpClient httpClient = new DefaultHttpClient();
-            String url = "laurl:123/Apli/Usuarios/Usuario......";
+            StringBuilder result = new StringBuilder();
+            String url = "http://192.168.0.24:567/Api/Usuarios/Usuario/"+params[0]+"/"; //esto tiene que concretarse
             URL objUrl = null;
             try { //me pedía envolverlo en try catch
-                objUrl = new URL();
+                objUrl = new URL(url);
                 HttpURLConnection urlConnection = null;
                 urlConnection = (HttpURLConnection) objUrl.openConnection();
                 urlConnection.setDoOutput(true);
                 urlConnection.setDoInput(true);
                 urlConnection.setRequestProperty("Content-Type", "application/json");
+                //urlConnection.setRequestProperty("Accept", "application/json");
+                urlConnection.setRequestMethod("GET");
 
-                urlConnection.setRequestProperty("Accpet", "application/json");
-                urlConnection.setRequestMethod("POST");
+                int responseCode = urlConnection.getResponseCode();
+                String responseMessage = urlConnection.getResponseMessage();
 
-                JSONObject dato = new JSONObject();
-                dato.put("email", params[0]);
-                dato.put("password", params[1]);
-
-                OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
-                wr.write(dato.toString());
-                wr.flush();
+                System.out.println("--> responseCode es: "+ responseCode);
+                System.out.println("--> responseMensage es: "+ responseMessage);
+                //InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                BufferedReader reader = new BufferedReader
+                        (new InputStreamReader(urlConnection.getInputStream()));
 
                 int httpResponse = urlConnection.getResponseCode();
                 if(httpResponse == HttpURLConnection.HTTP_OK)
@@ -90,34 +117,46 @@ public class LoginFragment extends Fragment {
                 {
                     Log.e("ServicioRest", "Error resultado" + httpResponse);
                     resul = false;
-
-                //urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible )");
-                urlConnection.setRequestProperty("Accept", "application/json");
-                urlConnection.setRequestMethod("GET");
-
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-                int responseCode = urlConnection.getResponseCode();
-                String responseMessage = urlConnection.getResponseMessage();
-
-                System.out.println("--> responseCode es: "+ responseCode);
-                System.out.println("--> responseMensage es: "+ responseMessage);
-
-
-
-                String line;
-                StringBuffer response = new StringBuffer();
-                while ((line = reader.readLine())!=null){
-                    response.append(line);
-
                 }
+
+                JSONObject datoObtenido = new JSONObject(response.toString()); //Construimos el objeto Usuario en formato JSON
+                String email = datoObtenido.getString("email");
+                String passwd = datoObtenido.getString("password");
 
             } catch(Exception ex)
             {
                 Log.e("ServicioRest", "Error!", ex);
                 resul = false;
             }
+
+                //Aquí no tengo muy claro qué leches está pasando
+//                OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
+//                wr.write(dato.toString());
+//                wr.flush();
+//
+//                int httpResponse = urlConnection.getResponseCode();
+//                if(httpResponse == HttpURLConnection.HTTP_OK)
+//                {
+//                    BufferedReader br = new BufferedReader(
+//                            new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
+//                    String valorDevuelto = null;
+//                    valorDevuelto = br.readLine(); //en comentario tutorial ponía br.Line()
+//                    if(!valorDevuelto.equals("true"))
+//                        resul = false;
+//                }
+//                else
+//                {
+//                    Log.e("ServicioRest", "Error resultado" + httpResponse);
+//                    resul = false;
+//                }
+//
+//            } catch(Exception ex)
+//            {
+//                Log.e("ServicioRest", "Error!", ex);
+//                resul = false;
+//            }
+
+
             /*try{
                 InputStream in =  new BufferedInputStream(urlConnection.getInputStream());
                 readStream(in); //este ejemplo tiene un método que lee el stream. No sé si lo
