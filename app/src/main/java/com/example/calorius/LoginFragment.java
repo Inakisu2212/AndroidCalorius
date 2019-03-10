@@ -81,105 +81,55 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             boolean resul = true;
             String texto = params[0];
-            //HttpClient httpClient = new DefaultHttpClient();
-            StringBuilder result = new StringBuilder();
-            String url = "http://192.168.0.24:567/Api/Usuarios/Usuario/"+params[0]+"/"; //esto tiene que concretarse
-            URL objUrl = null;
-            try { //me pedía envolverlo en try catch
-                objUrl = new URL(url);
-                HttpURLConnection urlConnection = null;
-                urlConnection = (HttpURLConnection) objUrl.openConnection();
-                urlConnection.setDoOutput(true);
-                urlConnection.setDoInput(true); //puede que esto sobre
-                urlConnection.setRequestProperty("Content-Type", "application/json");
-                //urlConnection.setRequestProperty("Accept", "application/json");
-                urlConnection.setRequestMethod("GET");
 
+            String url = "http://192.168.0.24:567/Api/Usuarios/Usuario/"+params[0]+"/"; //esto tiene que concretarse
+
+            try { //Comenzamos creando la conexion HTTPURL
+                URL objUrl = new URL("http://192.168.0.24:567/Api/Usuarios/Usuario/"+params[0]+"/");
+                HttpURLConnection urlConnection = (HttpURLConnection) objUrl.openConnection();
+                urlConnection.setDoOutput(true);
+                urlConnection.setDoInput(true);
+                urlConnection.setUseCaches(false);
+                urlConnection.setRequestProperty("Accept-Language", "ES");
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.setRequestProperty("Accept", "application/json");
+                urlConnection.setRequestMethod("GET"); //Operación GET
+                urlConnection.connect();
+                //Obtenemos códigos de respuesta HTTP para saber si hay errores o no
                 int responseCode = urlConnection.getResponseCode();
                 String responseMessage = urlConnection.getResponseMessage();
 
                 System.out.println("--> responseCode es: "+ responseCode);
                 System.out.println("--> responseMensage es: "+ responseMessage);
-                //InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                BufferedReader reader = new BufferedReader
-                        (new InputStreamReader(urlConnection.getInputStream()));
 
-                String line;
-                StringBuffer response = new StringBuffer();
-                while ((line = reader.readLine())!=null){
-                    response.append(line);
+                if (responseCode == HttpURLConnection.HTTP_OK){
+                    System.out.println("Hurra! Error 200! HTTP OK!");
+
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    //InputStreamReader inReader = new InputStreamReader(in, "UTF-8");
+
+                    BufferedReader reader = new BufferedReader
+                            (new InputStreamReader(urlConnection.getInputStream()));
+
+                    String line;
+                    StringBuffer response = new StringBuffer();
+                    while ((line = reader.readLine())!=null){
+                        response.append(line);
+                    }
+
+                    JSONObject datoObtenido = new JSONObject(response.toString()); //Construimos el objeto Usuario en formato JSON
+                    String email = datoObtenido.getString("email");
+                    String passwd = datoObtenido.getString("password");
+                }else{
+                    System.out.println("Error HTTP:");
+                    System.out.println("--> responseCode es: "+ responseCode);
+                    System.out.println("--> responseMensage es: "+ responseMessage);
                 }
-
-                JSONObject datoObtenido = new JSONObject(response.toString()); //Construimos el objeto Usuario en formato JSON
-                String email = datoObtenido.getString("email");
-                String passwd = datoObtenido.getString("password");
-
             } catch(Exception ex)
             {
                 Log.e("ServicioRest", "Error!", ex);
                 resul = false;
             }
-
-                //Aquí no tengo muy claro qué leches está pasando
-//                OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
-//                wr.write(dato.toString());
-//                wr.flush();
-//
-//                int httpResponse = urlConnection.getResponseCode();
-//                if(httpResponse == HttpURLConnection.HTTP_OK)
-//                {
-//                    BufferedReader br = new BufferedReader(
-//                            new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
-//                    String valorDevuelto = null;
-//                    valorDevuelto = br.readLine(); //en comentario tutorial ponía br.Line()
-//                    if(!valorDevuelto.equals("true"))
-//                        resul = false;
-//                }
-//                else
-//                {
-//                    Log.e("ServicioRest", "Error resultado" + httpResponse);
-//                    resul = false;
-//                }
-//
-//            } catch(Exception ex)
-//            {
-//                Log.e("ServicioRest", "Error!", ex);
-//                resul = false;
-//            }
-
-
-            /*try{
-                InputStream in =  new BufferedInputStream(urlConnection.getInputStream());
-                readStream(in); //este ejemplo tiene un método que lee el stream. No sé si lo
-                                //tenemos que hacer así...
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally{
-                urlConnection.disconnect();
-            }
-            String id = params[0];
-
-            HttpGet del =
-                    new HttpGet("http://10.107.57.21:51674/Api/Clientes/Cliente/" + id);
-
-            del.setHeader("content-type", "application/json");
-
-            try
-            {
-                HttpResponse resp = httpClient.execute(del);
-                String respStr = EntityUtils.toString(resp.getEntity());
-
-                JSONObject respJSON = new JSONObject(respStr);
-
-                idCli = respJSON.getInt("Id");
-                nombCli = respJSON.getString("Nombre");
-                telefCli = respJSON.getInt("Telefono");
-            }
-            catch(Exception ex)
-            {
-                Log.e("ServicioRest","Error!", ex);
-                resul = false;
-            }*/
 
             return resul;
         }
@@ -188,7 +138,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             if (result)
             {
-              lblResultado.setText("-> " + email + " - " + password);
+              //lblResultado.setText("-> " + email + " - " + password);
             }
         }
     }
