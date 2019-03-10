@@ -26,6 +26,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.methods.HttpGet;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
+import cz.msebera.android.httpclient.util.EntityUtils;
 
 
 /**
@@ -75,13 +80,40 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @TargetApi(11)
     private class TareaWSObtener extends AsyncTask<String,Integer,Boolean> {
 
-        private String email;
-        private String password;
+    private String fotoUsu = "No se ha provisto";
 
         protected Boolean doInBackground(String... params) {
 
             boolean resul = true;
 
+            HttpClient httpClient = new DefaultHttpClient();
+
+            String email = params[0];
+            System.out.println("Email escrito: "+ email);
+            HttpGet del =
+                    new HttpGet("http://192.168.0.24:567/Api/Usuarios/Usuario/" + email+"/");
+
+            del.setHeader("content-type", "application/json");
+
+            try
+            {
+                HttpResponse resp = httpClient.execute(del);
+                String respStr = EntityUtils.toString(resp.getEntity());
+
+                JSONObject respJSON = new JSONObject(respStr);
+
+                String emailUsu = respJSON.getString("email");
+                String passwdUsu = respJSON.getString("password");
+                fotoUsu = respJSON.getString("foto");
+
+                System.out.println("Devuelve: " + emailUsu + " - " + passwdUsu + " - " + fotoUsu);
+                lblResultado.setText("" + emailUsu + " - " + passwdUsu + " - " + fotoUsu);
+
+            }
+            catch(Exception ex)
+            {
+                Log.e("ServicioRest","Error!", ex);
+            }
 
             return resul;
         }
