@@ -84,7 +84,7 @@ public class regCalFragment extends Fragment {
     }
 
     public JSONArray obtenerAlimentos() { //Conexión para obtener alimentos
-        JSONArray jsonArray = null;
+        JSONArray jsonArray = new JSONArray();
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
         if (SDK_INT > 8)
         {
@@ -106,15 +106,15 @@ public class regCalFragment extends Fragment {
                 String respStr = EntityUtils.toString(resp.getEntity());
 
                 //Creamos el objeto JSON
-                JSONArray respJSON = new JSONArray(respStr);
+                //JSONArray respJSON = new JSONArray(respStr);
                 //Obtenemos valores del objeto JSON para su uso
 //                String nombreAl = respJSON.getString("nombre");
 //                String caloriasAl = respJSON.getString("calorias");
 //                System.out.println("Devuelve: " + nombreAl + " - " + caloriasAl + " - ");
 
-                JSONArray jsonAl = new JSONArray(respJSON);
+                JSONArray jsonAl = new JSONArray(respStr);
                 for (int j = 0 ; j<jsonAl.length() ; j++){
-                    JSONObject jOb = jsonAl.get;
+                    JSONObject jOb = jsonAl.getJSONObject(j);
                     jsonArray.put(j, jOb);
                 }
 
