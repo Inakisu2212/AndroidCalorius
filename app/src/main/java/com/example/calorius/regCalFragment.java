@@ -1,6 +1,7 @@
 package com.example.calorius;
 
 
+import android.annotation.TargetApi;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.methods.HttpGet;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
+import cz.msebera.android.httpclient.util.EntityUtils;
 
 
 /**
@@ -36,101 +43,52 @@ public class regCalFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_reg_cal, container, false);
     }
 
+    @TargetApi(11)
     private class TareaWSObtener extends AsyncTask<String,Integer,Boolean> {
-
-        private String email;
-        private String password;
 
         protected Boolean doInBackground(String... params) {
 
             boolean resul = true;
+            String codigoAl = params[0];
 
-            //HttpClient httpClient = new DefaultHttpClient();
-            String url = "192.168.0.24:567/Api/Usuarios/Usuario/"; //esto tiene que concretarse
-            URL objUrl = null;
-            try { //me pedía envolverlo en try catch
-                objUrl = new URL(url);
-                HttpURLConnection urlConnection = null;
-                urlConnection = (HttpURLConnection) objUrl.openConnection();
-                urlConnection.setDoOutput(true);
-                urlConnection.setDoInput(true);
-                urlConnection.setRequestProperty("Content-Type", "application/json");
-                urlConnection.setRequestProperty("Accept", "application/json");
-                urlConnection.setRequestMethod("GET");
-
-                JSONObject dato = new JSONObject(); //Construimos el objeto Usuario en formato JSON
-                dato.put("email", params[0]);
-                dato.put("password", params[1]);
-
-                //Aquí no tengo muy claro qué leches está pasando
-                OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
-                wr.write(dato.toString());
-                wr.flush();
-
-                int httpResponse = urlConnection.getResponseCode();
-                if(httpResponse == HttpURLConnection.HTTP_OK)
-                {
-                    BufferedReader br = new BufferedReader(
-                            new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
-                    String valorDevuelto = null;
-                    valorDevuelto = br.readLine(); //en comentario tutorial ponía br.Line()
-                    if(!valorDevuelto.equals("true"))
-                        resul = false;
-                }
-                else
-                {
-                    Log.e("ServicioRest", "Error resultado" + httpResponse);
-                    resul = false;
-                }
-
-            } catch(Exception ex)
-            {
-                Log.e("ServicioRest", "Error!", ex);
-                resul = false;
+            //Preparamos la conexión HTTP
+            HttpClient httpClient = new DefaultHttpClient();
+            String laUrl;
+            if (codigoAl != null){//Dependiendo de si pedimos un alimento o todos.
+                laUrl = "http://192.168.0.24:567/Api/Alimentos/Alimento/" + codigoAl+"/";
+            }else{
+                laUrl = "http://192.168.0.24:567/Api/Alimentos";
             }
-
-
-            /*try{
-                InputStream in =  new BufferedInputStream(urlConnection.getInputStream());
-                readStream(in); //este ejemplo tiene un método que lee el stream. No sé si lo
-                                //tenemos que hacer así...
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally{
-                urlConnection.disconnect();
-            }
-            String id = params[0];
-
-            HttpGet del =
-                    new HttpGet("http://10.107.57.21:51674/Api/Clientes/Cliente/" + id);
-
+            HttpGet del = new HttpGet(laUrl);
             del.setHeader("content-type", "application/json");
 
             try
             {
                 HttpResponse resp = httpClient.execute(del);
                 String respStr = EntityUtils.toString(resp.getEntity());
-
+                //Creamos el objeto JSON
                 JSONObject respJSON = new JSONObject(respStr);
+                //Obtenemos valores del objeto JSON para su uso
+                String emailUsu = respJSON.getString("email");
+                String passwdUsu = respJSON.getString("password");
 
-                idCli = respJSON.getInt("Id");
-                nombCli = respJSON.getString("Nombre");
-                telefCli = respJSON.getInt("Telefono");
+                System.out.println("Devuelve: " + emailUsu + " - " + passwdUsu + " - ");
+                resul = true;
+
             }
             catch(Exception ex)
             {
                 Log.e("ServicioRest","Error!", ex);
-                resul = false;
-            }*/
+            }
 
             return resul;
         }
 
-        protected void onPostExecute(Boolean result) { //A partir de aquí hacer que funcione
+        protected void onPostExecute(Boolean result) {
 
             if (result)
             {
-                //  lblResultado.setText("" + idCli + "-" + nombCli + "-" + telefCli);
+
             }
         }
     }
