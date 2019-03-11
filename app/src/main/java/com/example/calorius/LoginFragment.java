@@ -92,8 +92,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             HttpClient httpClient = new DefaultHttpClient();
 
             System.out.println("Email escrito: "+ emailIntrod);
+            System.out.println("Passwd escrito: "+ passwdIntrod);
             HttpGet del =
-                    new HttpGet("http://192.168.0.24:567/Api/Usuarios/Usuario/" + emailIntrod+"/");
+                    new HttpGet("http://10.111.66.10:567/Api/Usuarios/Usuario/" + emailIntrod+"/");
             del.setHeader("content-type", "application/json");
 
             try
