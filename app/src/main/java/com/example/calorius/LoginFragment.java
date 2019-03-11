@@ -80,34 +80,43 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @TargetApi(11)
     private class TareaWSObtener extends AsyncTask<String,Integer,Boolean> {
 
-    private String fotoUsu = "No se ha provisto";
+        private String fotoUsu = "No se ha provisto";
 
         protected Boolean doInBackground(String... params) {
 
             boolean resul = true;
+            String emailIntrod = params[0];
+            String passwdIntrod = params[1];
 
+            //Preparamos la conexión HTTP
             HttpClient httpClient = new DefaultHttpClient();
 
             String email = params[0];
             System.out.println("Email escrito: "+ email);
             HttpGet del =
                     new HttpGet("http://192.168.0.24:567/Api/Usuarios/Usuario/" + email+"/");
-
             del.setHeader("content-type", "application/json");
 
             try
             {
                 HttpResponse resp = httpClient.execute(del);
                 String respStr = EntityUtils.toString(resp.getEntity());
-
+                //Creamos el objeto JSON
                 JSONObject respJSON = new JSONObject(respStr);
-
+                //Obtenemos valores del objeto JSON para su uso
                 String emailUsu = respJSON.getString("email");
                 String passwdUsu = respJSON.getString("password");
                 fotoUsu = respJSON.getString("foto");
 
                 System.out.println("Devuelve: " + emailUsu + " - " + passwdUsu + " - " + fotoUsu);
+                resul = true;
                 //lblResultado.setText("" + emailUsu + " - " + passwdUsu + " - " + fotoUsu);
+                //------Comprobamos que email y password coincidan
+                if(emailUsu.equals(emailIntrod) && passwdUsu.equals(passwdIntrod)){
+                    System.out.println("-----> Login correcto!");
+                    //No sé si el resto de cosas suceden aquí o en otro sitio
+                }
+
 
             }
             catch(Exception ex)
@@ -122,7 +131,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             if (result)
             {
-              //  lblResultado.setText("" + idCli + "-" + nombCli + "-" + telefCli);
+
             }
         }
     }
