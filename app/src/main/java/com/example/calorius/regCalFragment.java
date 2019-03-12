@@ -2,7 +2,10 @@ package com.example.calorius;
 
 
 import android.annotation.TargetApi;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -12,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.Spinner;
 
 import org.json.JSONArray;
@@ -24,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.ClientProtocolException;
@@ -36,9 +41,13 @@ import cz.msebera.android.httpclient.util.EntityUtils;
 /**
  * A simple {@link Fragment} subclass.
  */
+@TargetApi(Build.VERSION_CODES.N)
 public class regCalFragment extends Fragment {
 
     private Spinner dropdownAl;
+    private CalendarView calendar;
+    private String fechaSeleccionada;
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
     public regCalFragment() {
         // Required empty public constructor
@@ -46,13 +55,15 @@ public class regCalFragment extends Fragment {
 
 
     @Override
+    @TargetApi(android.os.Build.VERSION_CODES.N)
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_reg_cal, container, false);
-        //Obtenemos el spinner desde el xml
+        //Obtenemos el spinner y calendario desde el xml
         dropdownAl =(Spinner)v.findViewById(R.id.spinnerAlimentos);
+        calendar = (CalendarView) v.findViewById(R.id.calendarView);
         //Creamos una lista para los alimentos del spinner
         JSONArray jsonAl = obtenerAlimentos();
         String[]  spinnerAlAr = null;
@@ -70,22 +81,23 @@ public class regCalFragment extends Fragment {
         }
         spinnerAlAr = spinnerNombreAlimentosArray;
         //create an adapter to describe how the items are displayed, adapters are used in several places in android.
-
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerAlAr);
         //set the spinners adapter to the previously created one.
         dropdownAl.setAdapter(adapter);
-
         //Ejecutamos para introducir valores en la base de datos
         Button botonReg = (Button) v.findViewById(R.id.botonReg);
+        //Obtenemos la fecha introducida en el calendarView
         botonReg.setOnClickListener(new View.OnClickListener() {
             @Override
-            @TargetApi(11)
+            @TargetApi(Build.VERSION_CODES.N)
             public void onClick(View v) {
 
                 //Obtener el id del alimento que se ha seleccionado
                 int idAlSeleccionado = dropdownAl.getSelectedItemPosition();
                 String alSeleccionado = spinnerAlimentosArray[idAlSeleccionado];
+                fechaSeleccionada = sdf.format(new Date(calendar.getDate()));
                 regCalFragment.TareaWSObtener tareaAsincrona = new regCalFragment.TareaWSObtener();
+                System.out.println("Fecha: "+fechaSeleccionada+" jsonAlimento: "+alSeleccionado);
                 tareaAsincrona.execute(alSeleccionado, fechaSeleccionada);
             }
         });
@@ -105,7 +117,7 @@ public class regCalFragment extends Fragment {
             //Preparamos la conexión HTTP
             HttpClient httpClient = new DefaultHttpClient();
             String laUrl;
-            laUrl = "http://192.168.0.24:567/Api/Alimentos";
+            laUrl = "http://10.111.66.10:567/Api/Alimentos";
 
             HttpGet del = new HttpGet(laUrl);
             del.setHeader("content-type", "application/json");

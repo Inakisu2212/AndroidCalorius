@@ -7,63 +7,87 @@
     android:layout_height="match_parent"
     tools:context=".regCalFragment">
 
-    <EditText
-        android:id="@+id/fechaRegCal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:inputType="date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
-
     <TextView
         android:id="@+id/textoFechaRegCal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="68dp"
+        android:layout_marginStart="64dp"
         android:layout_marginTop="9dp"
         android:text="Fecha"
+        app:layout_constraintBottom_toTopOf="@+id/calendarView"
         app:layout_constraintStart_toStartOf="@+id/calendarView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/spinnerComida"
-        android:layout_width="213dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="98dp"
+        android:layout_marginBottom="13dp"
         android:entries="@array/spinnerComidaArray"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerAlimentos"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.753" />
+        app:layout_constraintStart_toEndOf="@+id/textTipo"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
 
     <Spinner
         android:id="@+id/spinnerAlimentos"
-        android:layout_width="213dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginEnd="102dp"
+        android:layout_marginBottom="220dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textAlimento"
         app:layout_constraintTop_toBottomOf="@+id/spinnerComida" />
 
     <CalendarView
         android:id="@+id/calendarView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textoFechaRegCal" />
+        android:layout_height="0dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/textTipo"
+        app:layout_constraintStart_toStartOf="@+id/textTipo"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/botonReg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginEnd="58dp"
+        android:layout_marginBottom="167dp"
         android:text="Registrar"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/spinnerComida"
+        app:layout_constraintStart_toStartOf="@+id/spinnerAlimentos"
+        app:layout_constraintTop_toBottomOf="@+id/textAlimento" />
+
+    <TextView
+        android:id="@+id/textTipo"
+        android:layout_width="38dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="34dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginBottom="23dp"
+        android:text="Tipo:"
+        app:layout_constraintBottom_toTopOf="@+id/textAlimento"
+        app:layout_constraintEnd_toStartOf="@+id/spinnerComida"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerAlimentos" />
+        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+
+    <TextView
+        android:id="@+id/textAlimento"
+        android:layout_width="66dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="33dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="5dp"
+        android:text="Alimento:"
+        app:layout_constraintBottom_toTopOf="@+id/botonReg"
+        app:layout_constraintEnd_toStartOf="@+id/spinnerAlimentos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textTipo" />
 
 </android.support.constraint.ConstraintLayout>
