@@ -55,14 +55,14 @@ public class regCalFragment extends Fragment {
         //Creamos una lista para los alimentos del spinner
         JSONArray jsonAl = obtenerAlimentos();
         String[]  spinnerAlAr = null;
-        String[] spinnerNombreAlimentosArray = new String[jsonAl.length()];
-        String[] spinnerAlimentosArray = new String[jsonAl.length()];
+        String[] spinnerNombreAlimentosArray = new String[jsonAl.length()];//Array con nombres alim.
+        String[] spinnerAlimentosArray = new String[jsonAl.length()];//Array con objs. alim.
         for(int i = 0; i<jsonAl.length();i++){
             try {
                 JSONObject jAl = jsonAl.getJSONObject(i);
-                spinnerAlimentosArray[i] = jAl.toString();
+                spinnerAlimentosArray[i] = jAl.toString();//Lista para obtener obj. alim. al seleccionar del spinner
                 String nombre = jAl.getString("nombre");
-                spinnerNombreAlimentosArray[i]=nombre;
+                spinnerNombreAlimentosArray[i]=nombre; //Introd. nombres alim. en spinner
             } catch (JSONException e) {
                 e.printStackTrace();
             }
