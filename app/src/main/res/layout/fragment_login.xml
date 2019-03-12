@@ -43,7 +43,7 @@
         android:id="@+id/passwd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Contraseña::"
+        android:text="Contraseña:"
         app:layout_constraintBottom_toTopOf="@+id/passwdText"
         app:layout_constraintEnd_toEndOf="@+id/emailText"
         app:layout_constraintStart_toStartOf="@+id/email"

@@ -85,7 +85,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         protected Boolean doInBackground(String... params) {
 
             boolean resul = true;
-            String emailIntrod = params[0];
+            final String emailIntrod = params[0];
             String passwdIntrod = params[1];
 
             //Preparamos la conexión HTTP
@@ -93,6 +93,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             System.out.println("Email escrito: "+ emailIntrod);
             System.out.println("Passwd escrito: "+ passwdIntrod);
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ((MainActivity)getActivity()).passDataToActivity("Hola " + emailIntrod);
+                }
+            });
             HttpGet del =
                     new HttpGet("http://10.111.66.10:567/Api/Usuarios/Usuario/" + emailIntrod+"/");
             del.setHeader("content-type", "application/json");
@@ -114,6 +121,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 //------Comprobamos que email y password coincidan
                 if(emailUsu.equals(emailIntrod) && passwdUsu.equals(passwdIntrod)){
                     System.out.println("-----> Login correcto!");
+
                     //No sé si el resto de cosas suceden aquí o en otro sitio
                 }
 

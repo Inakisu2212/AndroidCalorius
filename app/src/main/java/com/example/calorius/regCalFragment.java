@@ -34,6 +34,7 @@ import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.ClientProtocolException;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.methods.HttpGet;
+import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 import cz.msebera.android.httpclient.util.EntityUtils;
 
@@ -47,7 +48,16 @@ public class regCalFragment extends Fragment {
     private Spinner dropdownAl;
     private CalendarView calendar;
     private String fechaSeleccionada;
-    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    private String correoLog = "aaaa@aaaa.com";
+
+    //Estos son params que damos a AsyncTask
+    private String nombreAlSel;
+    private String fechaAlSel;
+    private String tipoComidaSel;
+    private String codigoAlSel;
+    private String cantidadAlSel;
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     public regCalFragment() {
         // Required empty public constructor
@@ -65,7 +75,7 @@ public class regCalFragment extends Fragment {
         dropdownAl =(Spinner)v.findViewById(R.id.spinnerAlimentos);
         calendar = (CalendarView) v.findViewById(R.id.calendarView);
         //Creamos una lista para los alimentos del spinner
-        JSONArray jsonAl = obtenerAlimentos();
+        final JSONArray jsonAl = obtenerAlimentos();
         String[]  spinnerAlAr = null;
         String[] spinnerNombreAlimentosArray = new String[jsonAl.length()];//Array con nombres alim.
         final String[] spinnerAlimentosArray = new String[jsonAl.length()];//Array con objs. alim.
@@ -94,11 +104,29 @@ public class regCalFragment extends Fragment {
 
                 //Obtener el id del alimento que se ha seleccionado
                 int idAlSeleccionado = dropdownAl.getSelectedItemPosition();
+                //Obtenemos el jsonObject del alimento corresp. al id selecc.
+                JSONObject JOAlSel = new JSONObject();
+                try {
+                    JOAlSel = jsonAl.getJSONObject(idAlSeleccionado);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //Obtenemos los parámetros del objeto para enviarlos a asynctask
+                try {
+                    nombreAlSel = JOAlSel.getString("nombre");
+                    codigoAlSel= JOAlSel.getString("codigo");
+                    cantidadAlSel = JOAlSel.getString("calorias");
+                    tipoComidaSel = "A"; //ESTO ME LO HE INVENTADO, HAY QUE HACERLO TODAVÍA
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
                 String alSeleccionado = spinnerAlimentosArray[idAlSeleccionado];
                 fechaSeleccionada = sdf.format(new Date(calendar.getDate()));
-                regCalFragment.TareaWSObtener tareaAsincrona = new regCalFragment.TareaWSObtener();
+                regCalFragment.TareaWSEnviar tareaAsincrona = new regCalFragment.TareaWSEnviar();
                 System.out.println("Fecha: "+fechaSeleccionada+" jsonAlimento: "+alSeleccionado);
-                tareaAsincrona.execute(alSeleccionado, fechaSeleccionada);
+                tareaAsincrona.execute(alSeleccionado, fechaSeleccionada, nombreAlSel,
+                        fechaSeleccionada, tipoComidaSel, codigoAlSel, cantidadAlSel, correoLog);
             }
         });
         return v;
@@ -144,41 +172,40 @@ public class regCalFragment extends Fragment {
 
     }
         @TargetApi(11)
-        private class TareaWSObtener extends AsyncTask<String, Integer, Boolean> {
+        private class TareaWSEnviar extends AsyncTask<String, Integer, Boolean> {
 
             protected Boolean doInBackground(String... params) {
 
                 boolean resul = true;
-                String codigoAl = params[0];
+                String codigoAl = params[5];
 
                 //Preparamos la conexión HTTP
                 HttpClient httpClient = new DefaultHttpClient();
                 String laUrl;
-                if (codigoAl != null) {//Dependiendo de si pedimos un alimento o todos.
-                    laUrl = "http://192.168.0.24:567/Api/Alimentos/Alimento/" + codigoAl + "/";
-                } else {
-                    laUrl = "http://192.168.0.24:567/Api/Alimentos";
-                }
-                HttpGet del = new HttpGet(laUrl);
+                    laUrl = "http://10.111.66.10:567/Api/Alimentos/Alimento/" + codigoAl + "/";
+
+                HttpPost del = new HttpPost(laUrl);
                 del.setHeader("content-type", "application/json");
 
                 try {
+                    //Creamos el objeto JSON
+                    JSONObject respJSON = new JSONObject();
+                    //Obtenemos valores del objeto JSON para su uso
+                    respJSON.put("email", params[7]);
+                    //respJSON.put("nombre", params[2]);
+                    respJSON.put("fecha", params[3]);
+                    respJSON.put("tipocomida", params[4]);
+                    respJSON.put("codigoalimento", params[5]);
+                    respJSON.put("cantidad", params[6]);
+
                     HttpResponse resp = httpClient.execute(del);
                     String respStr = EntityUtils.toString(resp.getEntity());
 
-                    //Creamos el objeto JSON
-                    JSONObject respJSON = new JSONObject(respStr);
-                    //Obtenemos valores del objeto JSON para su uso
-                    String nombreAl = respJSON.getString("nombre");
-                    String caloriasAl = respJSON.getString("calorias");
-                    System.out.println("Devuelve: " + nombreAl + " - " + caloriasAl + " - ");
-
+                    if(!respStr.equals("true")){
+                        resul = false;
+                    }
                     resul = true;
 
-                    if (codigoAl == null) {//Para cuando pedimos todos los alimentos
-                        JSONArray jsonAl = new JSONArray(respJSON);
-                        //return jsonAl;
-                    }
 
                 } catch (Exception ex) {
                     Log.e("ServicioRest", "Error!", ex);
