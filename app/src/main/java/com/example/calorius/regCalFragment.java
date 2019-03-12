@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import org.json.JSONArray;
@@ -56,7 +57,7 @@ public class regCalFragment extends Fragment {
         JSONArray jsonAl = obtenerAlimentos();
         String[]  spinnerAlAr = null;
         String[] spinnerNombreAlimentosArray = new String[jsonAl.length()];//Array con nombres alim.
-        String[] spinnerAlimentosArray = new String[jsonAl.length()];//Array con objs. alim.
+        final String[] spinnerAlimentosArray = new String[jsonAl.length()];//Array con objs. alim.
         for(int i = 0; i<jsonAl.length();i++){
             try {
                 JSONObject jAl = jsonAl.getJSONObject(i);
@@ -73,16 +74,21 @@ public class regCalFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerAlAr);
         //set the spinners adapter to the previously created one.
         dropdownAl.setAdapter(adapter);
+
         //Ejecutamos para introducir valores en la base de datos
-//        botonRegist.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            @TargetApi(11)
-//            public void onClick(View v) {
-//                regCalFragment.TareaWSObtener tareaAsincrona = new regCalFragment.TareaWSObtener();
-//
-//                tareaAsincrona.execute(String algo);
-//            }
-//        });
+        Button botonReg = (Button) v.findViewById(R.id.botonReg);
+        botonReg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            @TargetApi(11)
+            public void onClick(View v) {
+
+                //Obtener el id del alimento que se ha seleccionado
+                int idAlSeleccionado = dropdownAl.getSelectedItemPosition();
+                String alSeleccionado = spinnerAlimentosArray[idAlSeleccionado];
+                regCalFragment.TareaWSObtener tareaAsincrona = new regCalFragment.TareaWSObtener();
+                tareaAsincrona.execute(alSeleccionado, fechaSeleccionada);
+            }
+        });
         return v;
     }
 
