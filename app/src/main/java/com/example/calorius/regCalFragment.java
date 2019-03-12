@@ -55,16 +55,19 @@ public class regCalFragment extends Fragment {
         //Creamos una lista para los alimentos del spinner
         JSONArray jsonAl = obtenerAlimentos();
         String[]  spinnerAlAr = null;
+        String[] spinnerNombreAlimentosArray = new String[jsonAl.length()];
         String[] spinnerAlimentosArray = new String[jsonAl.length()];
         for(int i = 0; i<jsonAl.length();i++){
             try {
                 JSONObject jAl = jsonAl.getJSONObject(i);
-                spinnerAlimentosArray[i]=jAl.toString();
+                spinnerAlimentosArray[i] = jAl.toString();
+                String nombre = jAl.getString("nombre");
+                spinnerNombreAlimentosArray[i]=nombre;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        spinnerAlAr = spinnerAlimentosArray;
+        spinnerAlAr = spinnerNombreAlimentosArray;
         //create an adapter to describe how the items are displayed, adapters are used in several places in android.
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerAlAr);
@@ -96,7 +99,7 @@ public class regCalFragment extends Fragment {
             //Preparamos la conexión HTTP
             HttpClient httpClient = new DefaultHttpClient();
             String laUrl;
-            laUrl = "http://10.111.66.10:567/Api/Alimentos";
+            laUrl = "http://192.168.0.24:567/Api/Alimentos";
 
             HttpGet del = new HttpGet(laUrl);
             del.setHeader("content-type", "application/json");
@@ -104,13 +107,6 @@ public class regCalFragment extends Fragment {
             try {
                 HttpResponse resp = httpClient.execute(del);
                 String respStr = EntityUtils.toString(resp.getEntity());
-
-                //Creamos el objeto JSON
-                //JSONArray respJSON = new JSONArray(respStr);
-                //Obtenemos valores del objeto JSON para su uso
-//                String nombreAl = respJSON.getString("nombre");
-//                String caloriasAl = respJSON.getString("calorias");
-//                System.out.println("Devuelve: " + nombreAl + " - " + caloriasAl + " - ");
 
                 JSONArray jsonAl = new JSONArray(respStr);
                 for (int j = 0 ; j<jsonAl.length() ; j++){
