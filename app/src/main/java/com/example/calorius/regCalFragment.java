@@ -183,7 +183,7 @@ public class regCalFragment extends Fragment {
                 //Preparamos la conexión HTTP
                 HttpClient httpClient = new DefaultHttpClient();
                 String laUrl;
-                    laUrl = "http://10.111.66.10:567/Api/Alimentos/Alimento/"+codigoAl;
+                    laUrl = "http://10.111.66.10:567/Api/Calorias/Caloria";
 
                 HttpPost del = new HttpPost(laUrl);
                 del.setHeader("Accept", "application/json");
@@ -194,8 +194,7 @@ public class regCalFragment extends Fragment {
                     JSONObject respJSON = new JSONObject();
                     //Obtenemos valores del objeto JSON para su uso
                     respJSON.put("email", params[7]);
-                    //respJSON.put("nombre", params[2]);
-                    respJSON.put("fecha", params[3]);
+                    respJSON.put("fecha", "1900-01-01 00:00:00"); //Aquí iba params[3]
                     respJSON.put("tipocomida", params[4]);
                     respJSON.put("codigoalimento", Integer.parseInt(params[5]));
                     respJSON.put("cantidad", Integer.parseInt(params[6]));
