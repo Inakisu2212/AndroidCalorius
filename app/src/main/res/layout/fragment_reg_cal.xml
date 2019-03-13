@@ -19,12 +19,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/spinnerComida"
+        android:id="@+id/spinnerComidaArray"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="98dp"
         android:layout_marginBottom="13dp"
-        android:entries="@array/spinnerComidaArray"
         app:layout_constraintBottom_toTopOf="@+id/spinnerAlimentos"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textTipo"
@@ -39,7 +38,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textAlimento"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerComida" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerComidaArray" />
 
     <CalendarView
         android:id="@+id/calendarView"
@@ -60,7 +59,7 @@
         android:layout_marginBottom="167dp"
         android:text="Registrar"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/spinnerComida"
+        app:layout_constraintEnd_toEndOf="@+id/spinnerComidaArray"
         app:layout_constraintStart_toStartOf="@+id/spinnerAlimentos"
         app:layout_constraintTop_toBottomOf="@+id/textAlimento" />
 
@@ -73,7 +72,7 @@
         android:layout_marginBottom="23dp"
         android:text="Tipo:"
         app:layout_constraintBottom_toTopOf="@+id/textAlimento"
-        app:layout_constraintEnd_toStartOf="@+id/spinnerComida"
+        app:layout_constraintEnd_toStartOf="@+id/spinnerComidaArray"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calendarView" />
 

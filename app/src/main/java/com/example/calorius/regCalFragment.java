@@ -47,9 +47,10 @@ import cz.msebera.android.httpclient.util.EntityUtils;
 public class regCalFragment extends Fragment {
 
     private Spinner dropdownAl;
+    private Spinner dropdownCom;
     private CalendarView calendar;
     private String fechaSeleccionada;
-    private String correoLog = "aaaa@aaaa.com";
+    private String correoLog = "a";
 
     //Estos son params que damos a AsyncTask
     private String nombreAlSel;
@@ -72,8 +73,11 @@ public class regCalFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_reg_cal, container, false);
-        //Obtenemos el spinner y calendario desde el xml
+        //Obtenemos que comida se ha seleccionado
+
+        //Obtenemos los spinner y calendario desde el xml
         dropdownAl =(Spinner)v.findViewById(R.id.spinnerAlimentos);
+        dropdownCom = (Spinner) v.findViewById(R.id.spinnerComidaArray);
         calendar = (CalendarView) v.findViewById(R.id.calendarView);
         //Creamos una lista para los alimentos del spinner
         final JSONArray jsonAl = obtenerAlimentos();
@@ -91,18 +95,39 @@ public class regCalFragment extends Fragment {
             }
         }
         spinnerAlAr = spinnerNombreAlimentosArray;
+        String[] spinnerComAr = new String[3];
+        spinnerComAr[0]="Desayuno";
+        spinnerComAr[1]="Comida";
+        spinnerComAr[2]="Cena";
         //create an adapter to describe how the items are displayed, adapters are used in several places in android.
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerAlAr);
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerComAr);
         //set the spinners adapter to the previously created one.
         dropdownAl.setAdapter(adapter);
+        dropdownCom.setAdapter(adapter2);
         //Ejecutamos para introducir valores en la base de datos
         Button botonReg = (Button) v.findViewById(R.id.botonReg);
         //Obtenemos la fecha introducida en el calendarView
+        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month,
+                                            int dayOfMonth) {
+                fechaSeleccionada = year+"-"+month+1+"-"+dayOfMonth;
+            }
+        });
         botonReg.setOnClickListener(new View.OnClickListener() {
             @Override
             @TargetApi(Build.VERSION_CODES.N)
             public void onClick(View v) {
-
+                //Obtenemos el tipo de comida que se ha seleccionado
+                if(dropdownCom.getSelectedItemPosition()==0){
+                    tipoComidaSel = "D";
+                }else if(dropdownCom.getSelectedItemPosition()==1) {
+                    tipoComidaSel = "C";
+                }else if(dropdownCom.getSelectedItemPosition()==2){
+                    tipoComidaSel = "A";
+                }
                 //Obtener el id del alimento que se ha seleccionado
                 int idAlSeleccionado = dropdownAl.getSelectedItemPosition();
                 //Obtenemos el jsonObject del alimento corresp. al id selecc.
@@ -117,13 +142,12 @@ public class regCalFragment extends Fragment {
                     nombreAlSel = JOAlSel.getString("nombre");
                     codigoAlSel= JOAlSel.getString("codigo");
                     cantidadAlSel = JOAlSel.getString("calorias");
-                    tipoComidaSel = "A"; //ESTO ME LO HE INVENTADO, HAY QUE HACERLO TODAVÍA
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
                 String alSeleccionado = spinnerAlimentosArray[idAlSeleccionado];
-                fechaSeleccionada = sdf.format(new Date(calendar.getDate()));
+                //fechaSeleccionada = sdf.format(new Date(calendar.getDate()));
                 regCalFragment.TareaWSEnviar tareaAsincrona = new regCalFragment.TareaWSEnviar();
                 System.out.println("Fecha: "+fechaSeleccionada+" jsonAlimento: "+alSeleccionado);
                 tareaAsincrona.execute(alSeleccionado, fechaSeleccionada, nombreAlSel,
@@ -194,10 +218,10 @@ public class regCalFragment extends Fragment {
                     JSONObject respJSON = new JSONObject();
                     //Obtenemos valores del objeto JSON para su uso
                     respJSON.put("email", params[7]);
-                    respJSON.put("fecha", "1900-01-01 00:00:00"); //Aquí iba params[3]
+                    respJSON.put("fecha", params[3]); //Aquí iba params[3]
                     respJSON.put("tipocomida", params[4]);
-                    respJSON.put("codigoalimento", Integer.parseInt(params[5]));
-                    respJSON.put("cantidad", Integer.parseInt(params[6]));
+                    respJSON.put("codigoalimento", params[5]);
+                    respJSON.put("cantidad", params[6]);
 
                     StringEntity entity = new StringEntity(respJSON.toString());
                     del.setEntity(entity);

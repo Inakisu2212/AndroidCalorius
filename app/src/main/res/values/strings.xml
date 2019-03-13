@@ -7,12 +7,6 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string-array name="spinnerComidaArray">
-        <item>Elige una comida:</item>
-        <item>Desayuno</item>
-        <item>Comida</item>
-        <item>Cena</item>
-    </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
