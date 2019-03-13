@@ -35,6 +35,7 @@ import cz.msebera.android.httpclient.client.ClientProtocolException;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.methods.HttpGet;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
+import cz.msebera.android.httpclient.entity.StringEntity;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 import cz.msebera.android.httpclient.util.EntityUtils;
 
@@ -182,10 +183,11 @@ public class regCalFragment extends Fragment {
                 //Preparamos la conexión HTTP
                 HttpClient httpClient = new DefaultHttpClient();
                 String laUrl;
-                    laUrl = "http://10.111.66.10:567/Api/Alimentos/Alimento/" + codigoAl + "/";
+                    laUrl = "http://10.111.66.10:567/Api/Alimentos/Alimento/"+codigoAl;
 
                 HttpPost del = new HttpPost(laUrl);
-                del.setHeader("content-type", "application/json");
+                del.setHeader("Accept", "application/json");
+                del.setHeader("Content-type", "application/json");
 
                 try {
                     //Creamos el objeto JSON
@@ -195,15 +197,16 @@ public class regCalFragment extends Fragment {
                     //respJSON.put("nombre", params[2]);
                     respJSON.put("fecha", params[3]);
                     respJSON.put("tipocomida", params[4]);
-                    respJSON.put("codigoalimento", params[5]);
-                    respJSON.put("cantidad", params[6]);
+                    respJSON.put("codigoalimento", Integer.parseInt(params[5]));
+                    respJSON.put("cantidad", Integer.parseInt(params[6]));
 
+                    StringEntity entity = new StringEntity(respJSON.toString());
+                    del.setEntity(entity);
                     HttpResponse resp = httpClient.execute(del);
                     String respStr = EntityUtils.toString(resp.getEntity());
-
-                    if(!respStr.equals("true")){
-                        resul = false;
-                    }
+                    System.out.println("--> Respuesta respString: "+ respStr);
+                    if(respStr.equals("true"))
+                        System.out.println("---> Introducción OK!");
                     resul = true;
 
 
