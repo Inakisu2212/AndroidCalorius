@@ -2,6 +2,7 @@ package com.example.calorius;
 
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -121,6 +122,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 //------Comprobamos que email y password coincidan
                 if(emailUsu.equals(emailIntrod) && passwdUsu.equals(passwdIntrod)){
                     System.out.println("-----> Login correcto!");
+
+
+//                    Intent intent = new Intent(getActivity(), regCalFragment.class);
+//                    intent.putExtra("Email", emailIntrod);
+//                    startActivity(intent);
 
                     //No sé si el resto de cosas suceden aquí o en otro sitio
                 }

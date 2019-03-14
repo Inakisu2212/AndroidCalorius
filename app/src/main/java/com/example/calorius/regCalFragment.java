@@ -2,12 +2,14 @@ package com.example.calorius;
 
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +18,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,14 +69,19 @@ public class regCalFragment extends Fragment {
         // Required empty public constructor
     }
 
+//    public void ponerCorreo(String correo){
+//        correoLog = correo;
+//    }
+
 
     @Override
     @TargetApi(android.os.Build.VERSION_CODES.N)
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_reg_cal, container, false);
+
         //Obtenemos que comida se ha seleccionado
 
         //Obtenemos los spinner y calendario desde el xml
@@ -113,7 +122,8 @@ public class regCalFragment extends Fragment {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month,
                                             int dayOfMonth) {
-                fechaSeleccionada = year+"-"+month+1+"-"+dayOfMonth;
+                month = month+1;
+                fechaSeleccionada = year+"-"+month+"-"+dayOfMonth;
             }
         });
         botonReg.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +155,14 @@ public class regCalFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                Intent intent = getActivity().getIntent();
+                Bundle b = intent.getExtras();
+
+//                if(b!=null)
+//                {
+//                    String Email =(String) b.get("Email");
+//                    correoLog = Email;
+//                }
 
                 String alSeleccionado = spinnerAlimentosArray[idAlSeleccionado];
                 //fechaSeleccionada = sdf.format(new Date(calendar.getDate()));
